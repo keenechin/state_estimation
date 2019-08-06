@@ -29,7 +29,7 @@ while len(fulldata)<100:
             print(data)
             fulldata.append(data)
 print(sys.argv),
-fname = 'servo_{0}_test_{1}.txt'.format(pos,sys.argv[2])
+fname = 'servo_{0}_test_{1}.txt'.format(sys.argv[1],sys.argv[2])
 print(fname)
 with open(fname,"w") as f:
     for item in fulldata:

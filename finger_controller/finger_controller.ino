@@ -15,7 +15,7 @@ int point_two = 512-400;
 
 void setup()
 {
-    SetPosition(1,current); //set the position of servo # 1 to '0'
+    SetPosition(1,1,current); //set the position of servo # 1 to '0'
 
     delay(100);//wait for servo to move
     Serial.begin(9600);
@@ -47,10 +47,10 @@ void loop()
 
 }
 
-void goPos(int pos,int vel){
+void goPos(int servo,int pos,int vel){
   if (current < pos){
     for(int i=current; i<=pos; i+=vel){
-      SetPosition(1,i);
+      SetPosition(servo,i);
       current = i;
       delay(10);
       Serial.println(current);
@@ -59,7 +59,7 @@ void goPos(int pos,int vel){
   
   if(current > pos){
     for(int i=current; i>=pos; i-=vel){
-      SetPosition(1,i);
+      SetPosition(servo,i);
       current = i;
       delay(10);
       Serial.println(current);
