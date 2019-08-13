@@ -1,8 +1,11 @@
 import serial
 import time
+import struct
 ser = serial.Serial('/dev/ttyS7',9600)
-time.sleep(0.05)
+time.sleep(10)
 print(ser.name)
-while (1):
-    ser.write(b'10300')
-    time.sleep(1)
+command_data = b'10300'
+ser.write(command_data)
+time.sleep(10)
+while ser.in_waiting>0:
+    print(ser.read())
