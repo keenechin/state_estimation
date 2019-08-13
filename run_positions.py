@@ -1,11 +1,9 @@
 import serial
 import time
-import struct
+import sys
 ser = serial.Serial('/dev/ttyS7',9600)
-time.sleep(10)
+time.sleep(7)
 print(ser.name)
-command_data = b'10300'
+command_data = "{}".format(sys.argv[1]).encode()
 ser.write(command_data)
-time.sleep(10)
-while ser.in_waiting>0:
-    print(ser.read())
+input('Press enter when experiment completes.')
