@@ -21,6 +21,7 @@
 
 MLX90393 mlx;
 MLX90393::txyz data; //Create a structure, called data, of four floats (t, x, y, and z)
+char buffer[50];
 
 void setup()
 {
@@ -29,29 +30,14 @@ void setup()
   mlx.begin(); //Assumes I2C jumpers are GND. No DRDY pin used.
   mlx.setOverSampling(0);
   mlx.setDigitalFiltering(0);
+  Serial.println(777);
 }
 
 void loop()
 {
   mlx.readData(data); //Read the values from the sensor
-
-
-  //Serial.print("magX[");
-  Serial.print(int(data.x));
-  Serial.print("\t");
-  //Serial.print("]\t magY[");
-  Serial.print(int(data.y));
-  Serial.print("\t");
-  //Serial.print("]\t magZ[");
-  Serial.print(int(data.z));
-  //Serial.print("] temperature(C)[");
-  //Serial.print(data.t);
-  //Serial.print("]");
-
-  Serial.println();
-
-
-  //Serial.println(int(data.y));
-
-  delay(50);
+  sprintf(buffer,"%d\t%d\t%d",int(data.x),int(data.y),int(data.z));
+  Serial.println(buffer);
+ 
+  delay(20);
 }

@@ -19,15 +19,22 @@ servo.write(servoMsg)
 time.sleep(1)
 print(servo.readline())
 """
+started = False
 while len(fulldata)<100:
     if(mag.in_waiting):
         raw_bytes = mag.readline()
-        decoded_bytes = raw_bytes.decode('utf-8').strip()
+        #print(raw_bytes)
+        decoded_bytes = raw_bytes.decode('ascii').strip()
+        #print(decoded_bytes)
 
         data = [float(x) for x in decoded_bytes.split()]
-        if (len(data)==3 & int(np.linalg.norm(data))!=0):
+        if data[0]==777:
+            started = True
+        if (len(data)==3 and any(data) and started):
             print(data)
             fulldata.append(data)
+        else:
+            print("Not saved: {}".format(data))
 print(sys.argv),
 fname = 'servo_{0}_test_{1}.txt'.format(sys.argv[1],sys.argv[2])
 print(fname)
