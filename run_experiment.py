@@ -53,6 +53,7 @@ if __name__ == "__main__":
     sensor.flushInput()
 
     positions = ["10690","10512","20600","20512"]
+    positions = sys.argv[1:]
     for target in positions:
         sensor_stream = []
         goPos(target)
