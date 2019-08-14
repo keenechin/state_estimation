@@ -30,7 +30,8 @@ void setup()
   mlx.begin(); //Assumes I2C jumpers are GND. No DRDY pin used.
   mlx.setOverSampling(0);
   mlx.setDigitalFiltering(0);
-  Serial.println(777);
+  Serial.println(7777777);
+  delay(20);
 }
 
 void loop()
