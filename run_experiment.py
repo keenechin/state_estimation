@@ -3,15 +3,16 @@ import time
 import sys
 import numpy as np
 import scipy.io as sio
+import cv2
 
 num_datapoints = 100
-experimental_array = {}
+experimental_array = []
 
 def read_serial(port,verbose):
     if(port.in_waiting):
         try:
             raw_bytes = port.readline()
-            decoded_bytes = raw_bytes.decode('ascii').strip()
+            decoded_bytes = raw_bytes.decode('utf-8').strip()
             data = [float(x) for x in decoded_bytes.split()]
             if verbose:
                 print(data)
@@ -43,25 +44,38 @@ def goPos(target):
         except:
             continue
 
-if __name__ == "__main__":
+def serial_setup():
     sensor = serial.Serial('/dev/ttyS6',9600,timeout=2)
-    controller = serial.Serial('/dev/ttyS7',9600)
+    controller = serial.Serial('/dev/ttyS7',9600,timeout=2)
     print("Connecting serial ports...")
-    time.sleep(7)
+    time.sleep(10)
     print("Sensor port: {}".format(sensor.name))
     print("Controller port: {}".format(controller.name))
     sensor.flushInput()
+    controller.flushInput()
+    return sensor,controller
 
-    positions = ["10690","10512","20600","20512"]
-    positions = sys.argv[1:]
-    for target in positions:
-        sensor_stream = []
-        goPos(target)
-        sensor_stream = np.array(collectStream(sensor_stream))
-        print(sensor_stream)
-        experimental_array["pos_{}".format(target)] = sensor_stream
-    print(experimental_array.keys())
-    sio.savemat("{}-{}.mat".format(positions[0], positions[-1]), experimental_array)
+if __name__ == "__main__":
+    sensor,controller = serial_setup()
+    fname = sys.argv[1]
+    with open(fname,'r') as f:
+        positions = f.readlines()
+        for target in positions:
+            target = target[:-1]
+            print(target)
+    #positions = ["03000512","04000512","06000512","05120512"]
+    #positions = sys.argv[1:]
+    
+            sensor_stream = []
+            goPos(target)
+            sensor_stream = np.array(collectStream(sensor_stream))
+            N = len(sensor_stream)
+            ys = np.ones((N,2))
+            ys[:,0] = target[:4]
+            ys[:,1] = target[4:]
+            experimental_array.append(np.hstack((sensor_stream,ys)))
+    print(experimental_array)
+    sio.savemat("{}.mat".format(fname[:-3]), {'data':experimental_array})
 
 
         
