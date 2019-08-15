@@ -24,9 +24,10 @@ int axis = ax_1;
 
 int vel_std = 1;
 
-int command_data = 0;// for incoming serial data
-
+//char command_data[8];// for incoming serial data
+String command_data;
 char buffer[50];
+
 
 void setup()
 {
@@ -41,30 +42,19 @@ void setup()
 void loop()
 {
   //int target = 512;
-  while (Serial.available() > 0) {
-    // read the incoming byte:
-    command_data = Serial.parseInt(); //5 digit format, 1st digit is axis, next 4 are position
-    //Serial.println(command_data);
-    //delay(5);
-    axis = (command_data / 10000)+9; // send "1" for servo 10, "2" for servo 11
-    new_target = command_data % 10000;//send 4 digit target position from 0000 to 1024
-    switch(axis){
-      case 10:
-        target_1 = new_target;
-        //Serial.println(target_1);
-        //Serial.println(target_2);
-        break;
-      case 11:
-        target_2 = new_target;
-        //Serial.println(target_1);
-        //Serial.println(target_2);        
-        break;
-      default:
-        break;
+  while (Serial.available()) {
+    delay(3);
+    if (Serial.available()>0){      
+      char digit = Serial.read();
+      command_data += digit;
     }
-    //Serial.println();
     
-    
+    if (command_data.length()==8){
+      Serial.println(command_data);
+      target_1 = command_data.substring(0,4).toInt();
+      target_2 = command_data.substring(4,8).toInt();
+      command_data = "";
+    }    
   }
   
   goPos(ax_1,&current_1,target_1,vel_std);
