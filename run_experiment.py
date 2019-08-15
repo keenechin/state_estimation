@@ -5,7 +5,7 @@ import numpy as np
 import scipy.io as sio
 import cv2
 
-num_datapoints = 100
+num_datapoints = 1000
 experimental_array = np.zeros((1,5))
 
 def read_serial(port,verbose):
@@ -76,7 +76,7 @@ if __name__ == "__main__":
             experimental_array = np.vstack((experimental_array,(np.hstack((sensor_stream,ys)))))
     experimental_array = experimental_array[1:,:]
     print(experimental_array)
-    sio.savemat("{}.mat".format(fname[:-3]), {'data':experimental_array})
+    sio.savemat("data_{}.mat".format(fname[:-3]), {'data':experimental_array})
 
 
         
