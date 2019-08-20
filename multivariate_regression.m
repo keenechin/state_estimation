@@ -3,11 +3,31 @@ clear all
 clc
 %%
 train_portion = 0.8;
-%%
+%% Get data
 importfile(uigetfile);
 N = length(data);
 Xs = data(:,1:3);
 ys = data(:,4:5);
+%%
+pos_list = unique(data(:,4));
+for i = 1: length(pos_list)
+    pos = pos_list(i)
+    disp(std(data(data(:,4)==pos,:)))
+end
+
+%% Process whole data set
+shuffled = data(randperm(N),:);
+train_test_cutoff = floor(N*train_portion);
+train_data = shuffled(1:train_test_cutoff-1,:);
+test_data = shuffled(train_test_cutoff:end,:);
+y_train = train_data(:,4:5);
+y_test = test_data(:,4:5);
+X_train = train_data(:,1:3);
+X_test = test_data(:,1:3);
+%%
+[regressor, valid_rmse] = trainRegressionModel(train_data);%Regenerate these functions using the learner apps, whenever making changes to code
+predict(regressor,X_test,y_test)
+
 %% Non-coupled extraction
 data_1 = data(data(:,5)==512,[1,2,3,4])
 data_2 = data(data(:,4)==512,[1,2,3,5])
@@ -30,47 +50,18 @@ y_train_2 = train_data_2(:,4);
 y_test_2 = test_data_2(:,4);
 X_train_2 = train_data_2(:,1:3);
 X_test_2 = test_data_2(:,1:3);
-%%
-shuffled = data(randperm(N),:);
-train_test_cutoff = floor(N*train_portion);
-train_data = shuffled(1:train_test_cutoff-1,:);
-test_data = shuffled(train_test_cutoff:end,:);
-y_train = train_data(:,4:5);
-y_test = test_data(:,4:5);
-X_train = train_data(:,1:3);
-X_test = test_data(:,1:3);
+
 %%
 %%
 disp("================Regression=================");
 [regressor_1, valid_rmse_1] = trainUnivariateRegressionModel(train_data_1);%Regenerate these functions using the learner apps, whenever making changes to code
-y_hat_reg_1 = regressor_1.predictFcn(test_data_1(:,1:3));
-errors_1 = y_hat_reg_1-y_test_1;
-err_dist_1 = mean(errors_1,2);
-bias_1 = mean(err_dist_1);
-stdev_1 = std(err_dist_1);
-figure
-histfit(err_dist_1);
-xlabel("Position error")
-ylabel("Number of test samples")
-title("Distribution of errors for position classification")
-disp("Prediction bias: "+bias_1);
-disp("Prediction standard deviation: "+stdev_1);
-disp("")
 
 [regressor_2, valid_rmse_2] = trainUnivariateRegressionModel(train_data_2);%Regenerate these functions using the learner apps, whenever making changes to code
-y_hat_reg_2 = regressor_2.predictFcn(test_data_2(:,1:3));
-errors_2 = y_hat_reg_2-y_test_2;
-err_dist_2 = mean(errors_2,2);
-bias_2 = mean(err_dist_2);
-stdev_2 = std(err_dist_2);
-figure
-histfit(err_dist_2);
-xlabel("Position error")
-ylabel("Number of test samples")
-title("Distribution of errors for position classification")
-disp("Prediction bias: "+bias_2);
-disp("Prediction standard deviation: "+stdev_2);
-disp("")
+%% Test set
+[bias_1,std_1,y_hat_1] = predict(regressor_1,X_test_1,y_test_1);
+[bias_2,std_2,y_hat_2] = predict(regressor_2,X_test_2,y_test_2);
+
+
 %%
 figure
 beta = mvregress(X_train,y_train);
