@@ -1,14 +1,14 @@
+#%%
 import serial
 import time
 import sys
 import numpy as np
 import scipy.io as sio
 import cv2
-
-num_datapoints = 1000
+#%%
+num_datapoints = 100
 experimental_array = np.zeros((1,5))
 save_dict ={}
-
 def read_serial(port,verbose):
     if(port.in_waiting):
         try:
@@ -46,8 +46,8 @@ def goPos(target):
             continue
 
 def serial_setup():
-    sensor = serial.Serial('/dev/ttyS6',9600,timeout=2)
-    controller = serial.Serial('/dev/ttyS7',9600,timeout=2)
+    sensor = serial.Serial('COM6',9600,timeout=2)
+    controller = serial.Serial('COM7',9600,timeout=2)
     print("Connecting serial ports...")
     time.sleep(10)
     print("Sensor port: {}".format(sensor.name))
