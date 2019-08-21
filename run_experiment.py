@@ -5,8 +5,9 @@ import numpy as np
 import scipy.io as sio
 import cv2
 
-num_datapoints = 100
+num_datapoints = 1000
 experimental_array = np.zeros((1,5))
+save_dict ={}
 
 def read_serial(port,verbose):
     if(port.in_waiting):
@@ -68,15 +69,21 @@ if __name__ == "__main__":
     
             sensor_stream = []
             goPos(target)
+            time.sleep(0.01)
+            sensor.flushInput()
+            time.sleep(0.05)
             sensor_stream = np.array(collectStream(sensor_stream))
             N = len(sensor_stream)
             ys = np.ones((N,2))
             ys[:,0] = target[:4]
             ys[:,1] = target[4:]
-            experimental_array = np.vstack((experimental_array,(np.hstack((sensor_stream,ys)))))
+            pos_data = np.hstack((sensor_stream,ys))
+            experimental_array = np.vstack((experimental_array, pos_data))
+            save_dict["pos_{}".format(target)] = pos_data
     experimental_array = experimental_array[1:,:]
     print(experimental_array)
-    sio.savemat("data_{}.mat".format(fname[:-4]), {'data':experimental_array})
+    save_dict['data'] = experimental_array
+    sio.savemat("data_{}.mat".format(fname[:-4]), save_dict)
 
 
         

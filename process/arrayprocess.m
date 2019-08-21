@@ -1,34 +1,44 @@
 close all
 clear all
 clc
-
-files = dir('*.txt');
-arrays = {};
-labels = {};
-for i=1:1:length(files)
-    %eval(['load ' files(i).name ' -ascii']);
-    fname = files(i).name;
-    table_data = importfile(fname);
-    arr = table2array(table_data);
-    split_str = split(fname,'_');
-    label = str2double(cell2mat(split_str(2)));
-    arr = arr';
-    labels{i} = label*ones(size(arr(1,:)));
-    arrays{i} = arr;
-end
-Xs = cell2mat(arrays);
-Xs = Xs';
-ys = cell2mat(labels);
-ys = ys';
-data = [Xs,ys];
+% %%
+% 
+% files = dir('*.txt');
+% arrays = {};
+% labels = {};
+% for i=1:1:length(files)
+%     %eval(['load ' files(i).name ' -ascii']);
+%     fname = files(i).name;
+%     table_data = importfile(fname);
+%     arr = table2array(table_data);
+%     split_str = split(fname,'_');
+%     label = str2double(cell2mat(split_str(2)));
+%     arr = arr';
+%     labels{i} = label*ones(size(arr(1,:)));
+%     arrays{i} = arr;
+% end
+% Xs = cell2mat(arrays);
+% Xs = Xs';
+% ys = cell2mat(labels);
+% ys = ys';
+% data = [Xs,ys];
+% N = length(data);
+% num_classes = length(unique(ys));
+% clear arr arrays label labels table_data Xs split_str i fname files 
+%%
+importfile(uigetfile);
 N = length(data);
-num_classes = length(unique(ys));
-clear arr arrays label labels table_data Xs split_str i fname files 
+Xs = data(:,1:3);
+y_1 = data(:,4);
+y_2 = data(:,5);
+ys = [y_1,y_2];
 %%
 acc_array = {};
 j=1;
-for class_portion = [1,1/2,1/4,1/8]% 0.125 -1 . Values lower than 0.125 will yield 2 classes: 0, and 1 other depending on the exact value
-    for train_portion = [0.8,0.1] %    0.1 - 0.99
+% for class_portion = [1,1/2,1/4,1/8]% 0.125 -1 . Values lower than 0.125 will yield 2 classes: 0, and 1 other depending on the exact value
+%     for train_portion = [0.8,0.1] %    0.1 - 0.99
+class_portion = 1;
+train_portion = 0.8;
 %% Change training type
 selection_type = ["even","random","blind"];
 class_selection = selection_type(1);
@@ -68,8 +78,8 @@ end
 train_data = train_data(train_idx,:);
 
 %% Split X and Y's
-y_train = train_data(:,end);
-y_test = test_data(:,end);
+y_train = train_data(:,4:5);
+y_test = test_data(:,4:5);
 X_train = train_data(:,1:3);
 X_test = test_data(:,1:3);
 
@@ -106,7 +116,5 @@ title("Confusion matrix for position classification")
 disp("Prediction accuracy: "+100*acc+"%");
 acc_array{j}= acc;
 j=j+1;
-end
-    end
 end
 
