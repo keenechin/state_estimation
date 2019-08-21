@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["even_grid_spacing_128.txt"]
+            "args": ["./null.txt"]
         }
     ]
 }
