@@ -43,3 +43,9 @@ for i = 1:length(states)
     hold on
 end
 
+%%
+
+for i = 1:length(states)
+    figure
+    plot(state_X{i})
+end
