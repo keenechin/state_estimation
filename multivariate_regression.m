@@ -1,5 +1,5 @@
 close all
-clear all
+clear
 clc
 %%
 train_portion = 0.8;

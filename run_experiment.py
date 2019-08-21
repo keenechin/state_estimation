@@ -65,12 +65,21 @@ def camSetup(cam_num):
     return cam, val, frame
 
 if __name__ == "__main__":
-    num_datapoints = 100
+    num_datapoints = int(sys.argv[2])
     experimental_array = np.zeros((1,5))
     save_dict ={}
   
     cam_1, val_1, frame_1 = camSetup(1)
     cam_2, val_2, frame_2 = camSetup(2)
+
+    for i in range(0,100):#give camera a chance to autoadjust brightness
+            cv2.imshow("Cam1", frame_1)
+            cv2.imshow("Cam2", frame_2)
+            val_1, frame_1 = cam_1.read()
+            val_2, frame_2 = cam_2.read()
+            key = cv2.waitKey(20)
+            if key == 27:
+                break
 
     sensor,controller = serial_setup()
 
@@ -92,8 +101,6 @@ if __name__ == "__main__":
             sensor.flushInput()
             time.sleep(0.05)
             sensor_stream = np.array(collectStream(sensor_stream))          
-            
-
             val_1, frame_1 = cam_1.read()          
             val_2, frame_2 = cam_2.read()
             if val_1 and val_2:
@@ -113,8 +120,6 @@ if __name__ == "__main__":
             stacked_data[:,:,pos_idx] = pos_data
             cam1_frames[pos_idx,:,:,:] = frame_1
             cam2_frames[pos_idx,:,:,:] = frame_2
-            #np.append(cam1_frames,frame_1,axis=0)
-            #np.append(cam2_frames,frame_2,axis=0)
             pos_idx+=1
 
     experimental_array = experimental_array[1:,:]
@@ -123,7 +128,7 @@ if __name__ == "__main__":
     save_dict['stacked'] = stacked_data
     save_dict['cam1_frames'] = cam1_frames
     save_dict['cam2_frames'] = cam2_frames
-    sio.savemat("data_{}.mat".format(fname[2:-4]), save_dict)
+    sio.savemat("../data/automated/{}_n_{}.mat".format(fname[2:-4],num_datapoints), save_dict)
     sensor.close()
     controller.close()
     cv2.destroyWindow("Cam1")

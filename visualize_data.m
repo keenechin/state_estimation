@@ -39,7 +39,7 @@ for i = 1:length(states)
     err_x = x + state_std(i,2)*cos(t);
     err_y = y + state_std(i,3)*sin(t);
     plot(err_x,err_y)
-    scatter(x,y,'c');
+    scatter(x,y,'k');
     hold on
 end
 
