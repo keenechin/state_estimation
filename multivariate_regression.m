@@ -26,7 +26,7 @@ X_train = train_data(:,1:3);
 X_test = test_data(:,1:3);
 %%
 [regressor, valid_rmse] = trainRegressionModel(train_data);%Regenerate these functions using the learner apps, whenever making changes to code
-predict(regressor,X_test,y_test)
+[bias,std_dev,y_hat] = predict(regressor,X_test,y_test)
 
 %% Non-coupled extraction
 data_1 = data(data(:,5)==512,[1,2,3,4])
@@ -57,7 +57,7 @@ disp("================Regression=================");
 [regressor_1, valid_rmse_1] = trainUnivariateRegressionModel(train_data_1);%Regenerate these functions using the learner apps, whenever making changes to code
 
 [regressor_2, valid_rmse_2] = trainUnivariateRegressionModel(train_data_2);%Regenerate these functions using the learner apps, whenever making changes to code
-%% Test set
+
 [bias_1,std_1,y_hat_1] = predict(regressor_1,X_test_1,y_test_1);
 [bias_2,std_2,y_hat_2] = predict(regressor_2,X_test_2,y_test_2);
 
