@@ -12,7 +12,7 @@ ys = data(:,4:5);
 pos_list = unique(data(:,4));
 for i = 1: length(pos_list)
     pos = pos_list(i)
-    disp(std(data(data(:,4)==pos,:)))
+    %disp(std(data(data(:,4)==pos,:)))
 end
 
 %% Process whole data set
@@ -26,11 +26,11 @@ X_train = train_data(:,1:3);
 X_test = test_data(:,1:3);
 %%
 [regressor, valid_rmse] = trainRegressionModel(train_data);%Regenerate these functions using the learner apps, whenever making changes to code
-[bias,std_dev,y_hat] = predict(regressor,X_test,y_test)
+[bias,std_dev,y_hat] = predict(regressor,X_test,y_test);
 
 %% Non-coupled extraction
-data_1 = data(data(:,5)==512,[1,2,3,4])
-data_2 = data(data(:,4)==512,[1,2,3,5])
+data_1 = data(data(:,5)==512,[1,2,3,4]);
+data_2 = data(data(:,4)==512,[1,2,3,5]);
 N1 = length(data_1);
 N2 = length(data_2);
 %%
@@ -51,7 +51,7 @@ y_test_2 = test_data_2(:,4);
 X_train_2 = train_data_2(:,1:3);
 X_test_2 = test_data_2(:,1:3);
 
-%%
+
 %%
 disp("================Regression=================");
 [regressor_1, valid_rmse_1] = trainUnivariateRegressionModel(train_data_1);%Regenerate these functions using the learner apps, whenever making changes to code
