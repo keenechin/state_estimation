@@ -61,6 +61,7 @@ def camSetup(cam_num):
         val, frame = cam.read()
     else:
         val = False
+        frame = None
 
     return cam, val, frame
 
@@ -91,10 +92,14 @@ if __name__ == "__main__":
         cam1_frames = np.zeros((num_positions,frame_1.shape[0],frame_1.shape[1],frame_1.shape[2]))
         cam2_frames = np.zeros_like(cam1_frames)
 
+        experiment_progress = 0
+
         pos_idx = 0
         for target in positions:
             target = target[:-1]
             print(target)
+            print("{:5.2f}%% complete".format(experiment_progress*100/num_positions))
+            experiment_progress+=1
             sensor_stream = []
             goPos(target)
             time.sleep(0.05)
@@ -110,7 +115,6 @@ if __name__ == "__main__":
             if key == 27:
                 break
             time.sleep(0.1)
-            print("{} {}".format(val_1,val_2))
             N = len(sensor_stream)
             ys = np.ones((N,2))
             ys[:,0] = target[:4]

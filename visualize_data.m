@@ -10,7 +10,7 @@ Y = data(:,4:5);
 % [coeff,score,latent,tsquared,explained,mu] = pca(X);
 % [U,S,V] = svd(X);
 % data_2d = U*S*V(:,1:2);
-% data_orig = data;
+% data_orig = data`;
 % data = [data_2d y];
 %%
 states = unique(data(:,[4 5]),'rows');
