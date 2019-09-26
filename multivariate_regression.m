@@ -8,6 +8,7 @@ Xs = data(:,1:3);
 ys = data(:,4:5);
 %% Pre-process data set
 train_portion = 0.8;
+
 shuffled = data(randperm(N),:);
 train_test_cutoff = floor(N*train_portion);
 train_data = shuffled(1:train_test_cutoff-1,:);
@@ -18,6 +19,7 @@ X_train = train_data(:,1:3);
 X_test = test_data(:,1:3);
 
 %% Non-coupled pre-processing
+
 data_1 = data(data(:,5)==512,[1,2,3,4]);
 data_2 = data(data(:,4)==512,[1,2,3,5]);
 N1 = length(data_1);
@@ -111,6 +113,7 @@ disp("Prediction bias: "+bias_mvar2);
 disp("Prediction standard deviation: "+std_mvar2);
 disp("");
 disp("");
+
 
 
 %% MVAR Neural
