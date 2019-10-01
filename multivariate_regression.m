@@ -1,11 +1,11 @@
-close all
-clear
-clc
+close all; clear; clc
 %% Get data
-importfile(uigetfile('D:\Drive\desktop\research\shape_tracking\data\automated\*.mat'));
+datafile = uigetfile('D:\Drive\desktop\research\shape_tracking\data\automated\*.mat')
+importfile(datafile);
 N = length(data);
 Xs = data(:,1:3);
 ys = data(:,4:5);
+
 %% Pre-process data set
 train_portion = 0.8;
 

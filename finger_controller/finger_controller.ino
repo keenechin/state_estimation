@@ -57,6 +57,7 @@ void loop()
     }    
   }
 
+
   goState(ax_1,&current_1,target_1, ax_2,&current_2,target_2,5);
   sprintf(buffer,"%d\t%d",current_1,current_2);
   Serial.println(buffer);
