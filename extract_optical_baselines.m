@@ -27,31 +27,44 @@ for i = 1:N
     processed1 = maskout(frame1,threshold);
     processed2 = maskout(frame2,threshold);
     
-    stats1 = regionprops(processed1,'Area','Centroid','MajorAxisLength','Orientation');
-    stats2 = regionprops(processed2,'Area','Centroid','MajorAxisLength','Orientation');
+    stats1 = regionprops(processed1,'Area','Centroid','MajorAxisLength','Orientation','BoundingBox');
+    stats2 = regionprops(processed2,'Area','Centroid','MajorAxisLength','Orientation','BoundingBox');
     [num_regions,~] = size(stats1);
     if num_regions > 1
         pause()
     end
     cam1_data.Centroids(i,:) = stats1.Centroid;
-    %cam1_data.BBox(i,:) = stats1.BoundingBox;
+    cam1_data.BBox(i,:) = stats1.BoundingBox;
     cam1_data.Theta(i,:) = stats1.Orientation;
     cam1_data.Length(i,:) = stats1.MajorAxisLength;
     
     cam2_data.Centroids(i,:) = stats2.Centroid;
-    %cam2_data.BBox(i,:) = stats2.BoundingBox;
+    cam2_data.BBox(i,:) = stats2.BoundingBox;
     cam2_data.Theta(i,:) = stats2.Orientation;
     cam2_data.Length(i,:) = stats2.MajorAxisLength;
 
 
-    imshow(processed1);
+    l = cam2_data.Length(i,:);
+    x = cam2_data.Centroids(i,1);
+    y = cam2_data.Centroids(i,2);
+    o = cam2_data.Theta(i,:);
+    imshow(processed2);
     hold on
-    line([0 cam1_data.Centroids(i,1)],[0 cam1_data.Centroids(i,2)])
+    line([0 cam2_data.Centroids(i,1)],[0 cam2_data.Centroids(i,2)])
+    %line([x, x+0.5*l*cos(o)],[y, y+0.5*l*sin(o)])
+    %line([x, x-0.5*l*cos(o)], [y, y-0.5*l*sin(o)])
+    rectangle('Position',cam2_data.BBox(i,:),'EdgeColor','w')
 %     
     pause(0.07);
 
 
 end
+%%
+figure
+plot(cam1_data.Centroids(2:end,1),cam1_data.Centroids(2:end,2))
+figure
+plot(cam2_data.Centroids(2:end,1),cam2_data.Centroids(2:end,2))
+
 %%
 function frame = get_frame(cam_frames, idx)
 raw = squeeze(cam_frames(idx,:,:,:));

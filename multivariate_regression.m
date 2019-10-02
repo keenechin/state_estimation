@@ -6,9 +6,11 @@ N = length(data);
 Xs = data(:,1:3);
 ys = data(:,4:5);
 
-%% Pre-process data set
+%% Get baselines
 train_portion = 0.8;
 
+
+%% Pre-process data set
 shuffled = data(randperm(N),:);
 train_test_cutoff = floor(N*train_portion);
 train_data = shuffled(1:train_test_cutoff-1,:);
@@ -40,6 +42,8 @@ y_train_2 = train_data_2(:,4);
 y_test_2 = test_data_2(:,4);
 X_train_2 = train_data_2(:,1:3);
 X_test_2 = test_data_2(:,1:3);
+
+
 %% Train models
 disp('training mimo1')
 [regressor_mimo1, valid_rmse_mimo1] = trainUnivariateRegressionModel([X_train,y_train(:,1)]);%Regenerate these functions using the learner apps, whenever making changes to code
