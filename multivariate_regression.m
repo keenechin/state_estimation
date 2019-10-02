@@ -8,7 +8,12 @@ ys = data(:,4:5);
 
 %% Get baselines
 train_portion = 0.8;
-
+neutral_y1 = data(:,4)== 512;
+data_ny1 = data(neutral_y1,:);
+neutral_y2 = data_ny1(:,5) == 512;
+data_neutral = data_ny1(neutral_y2,:);
+neutral_mean = mean(data_neutral);
+neutral_X = neutral_mean(1:3);
 
 %% Pre-process data set
 shuffled = data(randperm(N),:);
