@@ -57,6 +57,7 @@ def serial_setup():
 def camSetup(cam_num):
     cv2.namedWindow("Cam{}".format(cam_num))
     cam = cv2.VideoCapture((cam_num-1)+cv2.CAP_DSHOW)
+    cam.set(cv2.CAP_PROP_BUFFERSIZE,1)
     if cam.isOpened():
         val, frame = cam.read()
     else:
@@ -72,6 +73,7 @@ if __name__ == "__main__":
   
     cam_1, val_1, frame_1 = camSetup(1)
     cam_2, val_2, frame_2 = camSetup(2)
+    
 
     for i in range(0,100):#give camera a chance to autoadjust brightness
             cv2.imshow("Cam1", frame_1)
@@ -91,11 +93,19 @@ if __name__ == "__main__":
         stacked_data = np.zeros((num_datapoints,5,num_positions))
         cam1_frames = np.zeros((num_positions,frame_1.shape[0],frame_1.shape[1],frame_1.shape[2]))
         cam2_frames = np.zeros_like(cam1_frames)
+        val_1, frame_1 = cam_1.read()          
+        val_2, frame_2 = cam_2.read()
+        if val_1 and val_2:
+            cv2.imshow("Cam1",frame_1)
+            cv2.imshow("Cam2",frame_2)
 
         experiment_progress = 0
 
         pos_idx = 0
         for target in positions:
+            key = cv2.waitKey(20)
+            if key == 27:
+                break
             target = target[:-1]
             print(target)
             print("{:5.2f}%% complete".format(experiment_progress*100/num_positions))
@@ -105,15 +115,15 @@ if __name__ == "__main__":
             time.sleep(0.05)
             sensor.flushInput()
             time.sleep(0.05)
-            sensor_stream = np.array(collectStream(sensor_stream))          
-            val_1, frame_1 = cam_1.read()          
-            val_2, frame_2 = cam_2.read()
-            if val_1 and val_2:
-                cv2.imshow("Cam1",frame_1)
-                cv2.imshow("Cam2",frame_2)
-            key = cv2.waitKey(20)
-            if key == 27:
-                break
+            sensor_stream = np.array(collectStream(sensor_stream))   
+            for i in range(0,3):     
+                val_1, frame_1 = cam_1.read()          
+                val_2, frame_2 = cam_2.read()
+                if val_1 and val_2:
+                    cv2.imshow("Cam1",frame_1)
+                    cv2.imshow("Cam2",frame_2)
+                
+            
             time.sleep(0.1)
             N = len(sensor_stream)
             ys = np.ones((N,2))

@@ -1,7 +1,7 @@
 close all; clear; clc
 %% Get data
-datafile = uigetfile('D:\Drive\desktop\research\shape_tracking\data\automated\*.mat')
-importfile(datafile);
+
+load('-mat',uigetfile);
 N = length(data);
 Xs = data(:,1:3);
 ys = data(:,4:5);
@@ -13,22 +13,24 @@ data_ny1 = data(neutral_y1,:);
 neutral_y2 = data_ny1(:,5) == 512;
 data_neutral = data_ny1(neutral_y2,:);
 neutral_mean = mean(data_neutral);
-neutral_X = neutral_mean(1:3);
-
+neutral_x = neutral_mean(1:3);
+old_data = data;
+data = [data(:,1:end-2)-neutral_x, data(:,end-1:end)];
+    
 %% Pre-process data set
 shuffled = data(randperm(N),:);
 train_test_cutoff = floor(N*train_portion);
 train_data = shuffled(1:train_test_cutoff-1,:);
 test_data = shuffled(train_test_cutoff:end,:);
-y_train = train_data(:,4:5);
-y_test = test_data(:,4:5);
-X_train = train_data(:,1:3);
-X_test = test_data(:,1:3);
+y_train = train_data(:,end-1:end);
+y_test = test_data(:,end-1:end);
+X_train = train_data(:,1:end-2);
+X_test = test_data(:,1:end-2);
 
 %% Non-coupled pre-processing
-
-data_1 = data(data(:,5)==512,[1,2,3,4]);
-data_2 = data(data(:,4)==512,[1,2,3,5]);
+[~,nfields] = size(data);
+data_1 = data(data(:,end)==512,[1:nfields-2,nfields-1]);
+data_2 = data(data(:,end-1)==512,[1:nfields-2,nfields]);
 N1 = length(data_1);
 N2 = length(data_2);
 shuffled_1 = data_1(randperm(N1),:);
@@ -39,14 +41,14 @@ shuffled_2 = data_2(randperm(N2),:);
 train_test_cutoff = floor(N2*train_portion);
 train_data_2 = shuffled_2(1:train_test_cutoff-1,:);
 test_data_2 = shuffled_2(train_test_cutoff:end,:);
-y_train_1 = train_data_1(:,4);
-y_test_1 = test_data_1(:,4);
-X_train_1 = train_data_1(:,1:3);
-X_test_1 = test_data_1(:,1:3);
-y_train_2 = train_data_2(:,4);
-y_test_2 = test_data_2(:,4);
-X_train_2 = train_data_2(:,1:3);
-X_test_2 = test_data_2(:,1:3);
+y_train_1 = train_data_1(:,end);
+y_test_1 = test_data_1(:,end);
+X_train_1 = train_data_1(:,1:end-1);
+X_test_1 = test_data_1(:,1:end-1);
+y_train_2 = train_data_2(:,end);
+y_test_2 = test_data_2(:,end);
+X_train_2 = train_data_2(:,1:end-1);
+X_test_2 = test_data_2(:,1:end-1);
 
 
 %% Train models
@@ -64,36 +66,36 @@ beta = mvregress(X_train,y_train);
 %% MIMO1
 disp("MIMO 1:");
 [bias_mimo1,std_mimo1,y_hat_mimo1] = predict(regressor_mimo1,X_test,y_test(:,1));
-title("Univariate model: Multimodal axis 1 > Multimodal axis 1")
+%title("Univariate model: Multimodal axis 1 > Multimodal axis 1")
 %% MIMO2
 disp("MIMO 2:");
 [bias_mimo2,std_mimo2,y_hat_mimo2] = predict(regressor_mimo2,X_test,y_test(:,2));
-title("Univariate model: Multimodal axis 2 > Multimodal axis 2")
+%title("Univariate model: Multimodal axis 2 > Multimodal axis 2")
 
 %% MIPO1
 disp("MIPO 1:");
 [bias_mipo1,std_mipo1,y_hat_mipo1] = predict(regressor_mimo1,X_test_1,y_test_1);
-title("Univariate model: Multimodal axis 1 > Pure axis 1")
+%title("Univariate model: Multimodal axis 1 > Pure axis 1")
 %% MIPO2
 disp("MIPO 2:");
 [bias_mipo2,std_mipo2,y_hat_mipo2] = predict(regressor_mimo2,X_test_2,y_test_2);
-title("Univariate model: Multimodal axis 2 > Pure axis 2")
+%title("Univariate model: Multimodal axis 2 > Pure axis 2")
 %% PIPO 1
 disp("PIPO 1:");
 [bias_pipo1,std_pipo1,y_hat_pipo1] = predict(regressor_pipo1,X_test_1,y_test_1);
-title("Univariate model: Pure axis 1 > Pure axis 1")
+%title("Univariate model: Pure axis 1 > Pure axis 1")
 %% PIPO 2
 disp("PIPO 2:");
 [bias_pipo2,std_pipo2,y_hat_pipo2] = predict(regressor_pipo2,X_test_2,y_test_2);
-title("Univariate model: Pure axis 2 > Pure axis 2")
+%title("Univariate model: Pure axis 2 > Pure axis 2")
 %% PIMO 1
 disp("PIMO 1:");
 [bias_pimo1,std_pimo1,y_hat_pimo1] = predict(regressor_pipo1,X_test,y_test(:,1));
-title("Univariate model: Pure axis 1 > Multimodal axis 1")
+%title("Univariate model: Pure axis 1 > Multimodal axis 1")
 %% PIMO 2
 disp("PIMO 2:");
 [bias_pimo2,std_pimo2,y_hat_pimo2] = predict(regressor_pipo2,X_test,y_test(:,2));
-title("Univariate model: Pure axis 2 > Multimodal axis 2")
+%title("Univariate model: Pure axis 2 > Multimodal axis 2")
 %% MVAR
 disp("MVAR Axis 1:");
 y_hat_mvar = X_test*beta;
@@ -124,34 +126,34 @@ disp("");
 disp("");
 
 
-
-%% MVAR Neural
-disp("Neural MVAR Axis 1:");
-y_hat_neural = multivariateNeuralNetTrained(X_test);
-errors_neural = y_hat_neural - y_test;
-errors_neural1 = errors_neural(:,1);
-bias_neural1 = mean(errors_neural1);
-std_neural1 = std(errors_neural1);
-figure
-histfit(errors_neural1);
-xlabel("Position error")
-ylabel("Number of test samples")
-title("Multivariate NN model: Multimodal grid > Multimodal data axis 1")
-disp("Prediction bias: "+bias_neural1);
-disp("Prediction standard deviation: "+std_neural1);
-disp("");
-disp("Neural MVAR Axis 2:");
-errors_neural2 = errors_neural(:,2);
-bias_neural2 = mean(errors_neural2);
-std_neural2 = std(errors_neural2);
-figure
-histfit(errors_neural2);
-xlabel("Position error")
-ylabel("Number of test samples")
-title("Multivariate NN model: Multimodal grid > Multimodal data axis 2")
-disp("Prediction bias: "+bias_neural2);
-disp("Prediction standard deviation: "+std_neural2);
-disp("");
+% 
+% %% MVAR Neural
+% disp("Neural MVAR Axis 1:");
+% y_hat_neural = multivariateNeuralNetTrained(X_test);
+% errors_neural = y_hat_neural - y_test;
+% errors_neural1 = errors_neural(:,1);
+% bias_neural1 = mean(errors_neural1);
+% std_neural1 = std(errors_neural1);
+% figure
+% histfit(errors_neural1);
+% xlabel("Position error")
+% ylabel("Number of test samples")
+% title("Multivariate NN model: Multimodal grid > Multimodal data axis 1")
+% disp("Prediction bias: "+bias_neural1);
+% disp("Prediction standard deviation: "+std_neural1);
+% disp("");
+% disp("Neural MVAR Axis 2:");
+% errors_neural2 = errors_neural(:,2);
+% bias_neural2 = mean(errors_neural2);
+% std_neural2 = std(errors_neural2);
+% figure
+% histfit(errors_neural2);
+% xlabel("Position error")
+% ylabel("Number of test samples")
+% title("Multivariate NN model: Multimodal grid > Multimodal data axis 2")
+% disp("Prediction bias: "+bias_neural2);
+% disp("Prediction standard deviation: "+std_neural2);
+% disp("");
 
 %% Compare
 
