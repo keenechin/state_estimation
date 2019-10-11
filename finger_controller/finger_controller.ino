@@ -10,8 +10,10 @@
 #include <ax12.h>
 
 
-int ax_1 = 10;
-int ax_2 = 11;
+int s0 = 10;
+int s1 = 11;
+int s2 = 12;
+int s3 = 13;
 
 int current_1 = 512;
 int current_2 = 512;
@@ -20,7 +22,6 @@ int target_2 = current_2;
 
 
 int new_target = current_1;
-int axis = ax_1;
 
 int vel_std = 1;
 
@@ -31,8 +32,10 @@ char buffer[50];
 
 void setup()
 {
-    SetPosition(ax_1,target_1); //set the position of servo # 1 to '0'
-    SetPosition(ax_2,target_2);
+    SetPosition(s0,target_1); //set the position of servo # 1 to '0'
+    SetPosition(s1,1024-target_1);
+    SetPosition(s2,target_2);
+    SetPosition(s3,1024-target_2);
 
     delay(500);//wait for servo to move
     Serial.begin(9600);
@@ -58,7 +61,7 @@ void loop()
   }
 
 
-  goState(ax_1,&current_1,target_1, ax_2,&current_2,target_2,5);
+  goState(&current_1,target_1, &current_2,target_2,5);
   sprintf(buffer,"%d\t%d",current_1,current_2);
   Serial.println(buffer);
   delay(50);
@@ -68,10 +71,12 @@ void loop()
  
 }
 
-void goState(int servo1,int *current1, int pos1,int servo2, int *current2, int pos2, int vel){
+void goState(int *current1, int pos1,int *current2, int pos2, int vel){
   if((abs(*current1-pos1)<(1)) & (abs(*current2 - pos2)<(1))){
     return;
   }
+
+  
   
   int start1 = *current1;
   int start2 = *current2;
@@ -95,9 +100,11 @@ void goState(int servo1,int *current1, int pos1,int servo2, int *current2, int p
        *current2 = pos2;
      }
      
-     SetPosition(servo2,*current2);
+     SetPosition(s2,*current2);
+     SetPosition(s3,1024-*current2);
      delay(10);
-     SetPosition(servo1,*current1);
+     SetPosition(s0,*current1);
+     SetPosition(s1,1024-*current1);
      delay(10);
 
   }
