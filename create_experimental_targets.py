@@ -20,6 +20,7 @@ except():
     y_step = 512
     fname = "snake.txt"
 
+
 num_x = int((x_end + x_step - x_start)/x_step)
 num_y = int((y_end + y_step - y_start)/y_step)
 grid = []
@@ -34,20 +35,47 @@ for x in np.arange(x_start,x_end+x_step,x_step):
     j=0
 
 array = np.array(grid)
-print(array)
 
+def write_smooth(grid):
+    with open(fname, "w") as f:
+        direction = 1
+        for row in grid:
+            if direction > 0:
+                for element in row:
+                    f.write(element)
+            else:
+                for element in reversed(row):
+                    f.write(element)
 
+            direction*=-1
 
-with open(fname, "w") as f:
-    direction = 1
-    for row in grid:
-        if direction > 0:
+def write_reading(grid):
+    with open(fname,"w") as f:
+        for row in grid:
             for element in row:
                 f.write(element)
-        else:
-            for element in reversed(row):
-                f.write(element)
 
-        direction*=-1
+def write_random(array):
+    flat = np.ravel(array)
+    print(flat)
+    np.random.shuffle(flat)
+    print(flat)
+    with open(fname,"w") as f:
+        for element in flat:
+            f.write(element)
 
-#%%
+
+sampling_type = "";
+try:
+    sampling_type = sys.argv[8];
+except():
+    sampling_type = "smooth"
+    
+if sampling_type == "smooth":
+    write_smooth(grid)
+
+if sampling_type == "reading":
+    write_reading(grid)
+if sampling_type == "random":
+    write_random(array)
+
