@@ -5,7 +5,7 @@ import datetime
 import random
 import sys
 
-mag = serial.Serial('/dev/ttyS6',9600,timeout=2)
+mag = serial.Serial('COM6',9600,timeout=2)
 print(mag.name)
 mag.flushInput()
 #time.sleep(1)
