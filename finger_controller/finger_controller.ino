@@ -44,6 +44,7 @@ void setup()
 
 void loop()
 {
+  command_data = "";
   //int target = 512;
   while (Serial.available()) {
     delay(3);
@@ -54,14 +55,14 @@ void loop()
     
     if (command_data.length()==8){
       Serial.println(command_data);
-      target_1 = command_data.substring(0,4).toInt();
-      target_2 = command_data.substring(4,8).toInt();
+      target_1 = max(min(command_data.substring(0,4).toInt(),1023),1);
+      target_2 = max(min(command_data.substring(4,8).toInt(),1023),1);
       command_data = "";
     }    
   }
 
 
-  goState(&current_1,target_1, &current_2,target_2,5);
+  goState(&current_1, target_1, &current_2, target_2, 5);
   sprintf(buffer,"%d\t%d",current_1,current_2);
   Serial.println(buffer);
   delay(50);
@@ -72,17 +73,13 @@ void loop()
 }
 
 void goState(int *current1, int pos1,int *current2, int pos2, int vel){
-  if((abs(*current1-pos1)<(1)) & (abs(*current2 - pos2)<(1))){
-    return;
-  }
-
-  
   
   int start1 = *current1;
   int start2 = *current2;
   
   double dist1 = pos1 - *current1;
   double dist2 = pos2 - *current2;
+  
   double fast_dist = min(abs(dist1),abs(dist2));
   int num_steps = ceil(fast_dist/vel);
   
@@ -100,11 +97,15 @@ void goState(int *current1, int pos1,int *current2, int pos2, int vel){
        *current2 = pos2;
      }
      
-     SetPosition(s2,*current2);
-     SetPosition(s3,1024-*current2);
-     delay(10);
+     
+
      SetPosition(s0,*current1);
+     delay(10);
      SetPosition(s1,1024-*current1);
+     delay(10);
+     SetPosition(s2,*current2);
+     delay(10);
+     SetPosition(s3,1024-*current2);
      delay(10);
 
   }
