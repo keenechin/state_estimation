@@ -25,14 +25,14 @@ shuffled = data[np.random.permutation(N),:]
 train_test_cutoff = int(np.floor(N*train_portion))
 train_data = shuffled[0:train_test_cutoff-1,:]
 test_data = shuffled[train_test_cutoff:-1,:]
-y_train = train_data[:,-3:-1]
-y_test = test_data[:,-3:-1]
-X_train = train_data[:,0:-2]
-X_test = test_data[:,0:-2]
+y_train = train_data[:,-2:]
+y_test = test_data[:,-2:]
+X_train = train_data[:,:-2]
+X_test = test_data[:,:-2]
 
 #%% Init Model
 kernel = 1.0 * Matern(length_scale=1.0, length_scale_bounds=(1e-1, 10.0),
-                        nu=1.5)
+                        nu=5/2)
 gp1 = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=20)
 gp2 = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=20)
 #%% Train Model
@@ -40,7 +40,13 @@ gp1.fit(X_train,y_train[:,0].reshape(-1,1))
 gp2.fit(X_train,y_train[:,1].reshape(-1,1))
 #%% Make predicitons
 
-y_pred_1, std_mimo1 = gp1.predict(X_test, return_std=True)
-y_pred_2, std_mimo2 = gp2.predict(X_test, return_std=True)
+bias_mimo1,std_mimo1,r1,y_hat_mimo1 = predict(gp1,X_test,y_test[:,0])
+bias_mimo2,std_mimo2,r2,y_hat_mimo2 = predict(gp2,X_test,y_test[:,1])
 
 #%% Evaluate predictions
+def predict(regressor, X_test, y_test):
+    y_hat_reg, r_stdev = regressor.predict(X_test, return_std=True)
+    errors = y_hat_reg-y_test
+    bias = np.mean(errors)
+    stdev = np.std(errors)
+    return [bias,stdev,r_stdev,y_hat_reg]
