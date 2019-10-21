@@ -1,6 +1,6 @@
-close all; clc; 
-clear;
-%% Get data
+% close all; clc; 
+% clear;
+ %% Get data
 % datafile = uigetfile('D:\Drive\desktop\research\shape_tracking\data\automated\*.mat')
 load('-mat',uigetfile)
 data = normalize(data);
@@ -57,10 +57,9 @@ cam1_data.Length = zeros(posN,1);
 cam1_data.Endpoint = zeros(posN,2);
 
 threshold = 1.5;
-figure
+ 
 for i = 1:posN
     frame1 = get_frame(cam1_frames,i);
-    imshow(frame1);
     [mframe1,processed1] = maskout(frame1,threshold);
     
     stats1 = regionprops(processed1,'Area','Centroid','MajorAxisLength','Orientation');
@@ -95,7 +94,7 @@ for i = 1:posN
     %line([x, ], [y, ])
     %rectangle('Position',cam1_data.BBox(i,:),'EdgeColor','w')
 %    
-    pause();
+    %pause();
 
 
 end

@@ -1,7 +1,7 @@
 close all; clear;
 %% Get data
-
-load('-mat',uigetfile);
+fname = uigetfile("../data/automated/")
+load('-mat',fname);
 N = length(data);
 Xs = data(:,1:3);
 ys = data(:,4:5);
@@ -56,7 +56,7 @@ disp('training mimo1')
 [regressor_mimo1, valid_rmse_mimo1] = trainUnivariateRegressionModel([X_train,y_train(:,1)]);%Regenerate these functions using the learner apps, whenever making changes to code
 disp('training mimo2')
 [regressor_mimo2, valid_rmse_mimo2] = trainUnivariateRegressionModel([X_train,y_train(:,2)]);%Regenerate these functions using the learner apps, whenever making changes to code
-%% MIMO1
+    %% MIMO1
 disp("MIMO 1:");
 [bias_mimo1,std_mimo1,y_hat_mimo1] = predict(regressor_mimo1,X_test,y_test(:,1));
 %title("Univariate model: Multimodal axis 1 > Multimodal axis 1")

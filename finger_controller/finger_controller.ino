@@ -73,7 +73,9 @@ void loop()
 }
 
 void goState(int *current1, int pos1,int *current2, int pos2, int vel){
-  
+  if((abs(*current1-pos1)<(1)) & (abs(*current2 - pos2)<(1))){
+    return;
+  }
   int start1 = *current1;
   int start2 = *current2;
   
@@ -100,13 +102,13 @@ void goState(int *current1, int pos1,int *current2, int pos2, int vel){
      
 
      SetPosition(s0,*current1);
-     delay(10);
+     delay(3);
      SetPosition(s1,1024-*current1);
-     delay(10);
+     delay(3);
      SetPosition(s2,*current2);
-     delay(10);
+     delay(3);
      SetPosition(s3,1024-*current2);
-     delay(10);
+     delay(3);
 
   }
 
