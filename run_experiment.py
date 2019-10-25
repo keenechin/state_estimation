@@ -6,13 +6,14 @@ import numpy as np
 import scipy.io as sio
 import cv2
 from serial_handler import read_serial,serial_setup, goPos
+import numpy.matlib
 #%%
 
 
 
 def collectStream(stream):
     while len(stream)<num_datapoints:
-        data = read_serial(sensor,False)
+        data = read_serial(sensor,True)
         if (len(data)==3 and any(data)):
             stream.append(data)
     return stream
@@ -31,6 +32,7 @@ def camSetup(cam_num):
 
 if __name__ == "__main__":
     num_datapoints = int(sys.argv[2])
+    stime = float(sys.argv[3])
     experimental_array = np.zeros((1,5))
     save_dict ={}
   
@@ -48,6 +50,7 @@ if __name__ == "__main__":
     fname = sys.argv[1]
     with open(fname,'r') as f:
         positions = f.readlines()
+        print(positions)
         num_positions = len(positions)
         stacked_data = np.zeros((num_datapoints,5,num_positions))
         cam1_frames = np.zeros((num_positions,frame_1.shape[0],frame_1.shape[1],frame_1.shape[2]))
@@ -66,9 +69,9 @@ if __name__ == "__main__":
             experiment_progress+=1
             sensor_stream = []
             goPos(controller,target)
-            time.sleep(0.05)
-            sensor.flushInput()
-            time.sleep(0.05)
+            time.sleep(stime)
+            sensor.reset_input_buffer()
+            time.sleep(0.01)
             sensor_stream = np.array(collectStream(sensor_stream))   
             for i in range(0,3):
                 val_1, frame_1 = cam_1.read()
@@ -88,7 +91,7 @@ if __name__ == "__main__":
     save_dict['data'] = experimental_array
     save_dict['stacked'] = stacked_data
     save_dict['cam1_frames'] = cam1_frames
-    sio.savemat("../data/automated/{}_n_{}.mat".format(fname[2:-4],num_datapoints), save_dict)
+    sio.savemat("../data/automated/sleep{}_{}_n_{}.mat".format(stime,fname[2:-4],num_datapoints), save_dict)
     sensor.close()
     controller.close()
     cv2.destroyWindow("Cam1")

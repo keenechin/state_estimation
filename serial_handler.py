@@ -2,14 +2,14 @@ import serial
 import time
 
 def serial_setup():
-    sensor = serial.Serial('COM6',9600,timeout=2)
+    sensor = serial.Serial('COM3',9600,timeout=2)
     controller = serial.Serial('COM7',9600,timeout=2)
     print("Connecting serial ports...")
     time.sleep(10)
     print("Sensor port: {}".format(sensor.name))
     print("Controller port: {}".format(controller.name))
-    sensor.flushInput()
-    controller.flushInput()
+    sensor.reset_input_buffer()
+    controller.reset_input_buffer()
     return sensor,controller
 
 def read_serial(port,verbose):
