@@ -62,7 +62,7 @@ void loop()
   }
 
 
-  goState(&current_1, target_1, &current_2, target_2, 5);
+  goState(&current_1, target_1, &current_2, target_2, 4);
   sprintf(buffer,"%d\t%d",current_1,current_2);
   Serial.println(buffer);
   delay(50);
@@ -82,7 +82,7 @@ void goState(int *current1, int pos1,int *current2, int pos2, int vel){
   double dist1 = pos1 - *current1;
   double dist2 = pos2 - *current2;
   
-  double fast_dist = min(abs(dist1),abs(dist2));
+  double fast_dist = max(abs(dist1),abs(dist2));
   int num_steps = ceil(fast_dist/vel);
   
   double slope1 = dist1/num_steps;
@@ -102,13 +102,10 @@ void goState(int *current1, int pos1,int *current2, int pos2, int vel){
      
 
      SetPosition(s0,*current1);
-     delay(3);
      SetPosition(s1,1024-*current1);
-     delay(3);
      SetPosition(s2,*current2);
-     delay(3);
      SetPosition(s3,1024-*current2);
-     delay(3);
+     delay(12);
 
   }
 

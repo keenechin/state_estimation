@@ -27,7 +27,6 @@ void setup()
 {
   Serial.begin(9600);
   Wire.begin();
-<<<<<<< HEAD
   mlx.begin(0); //Assumes I2C jumpers are GND. No DRDY pin used.
   mlx.setGainSel(7);
   mlx.setResolution(0, 0, 0); //x, y, z
