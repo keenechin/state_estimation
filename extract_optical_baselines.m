@@ -1,8 +1,8 @@
-% close all; clc; 
+close all; clear; 
 % clear;
  %% Get data
-% datafile = uigetfile('D:\Drive\desktop\research\shape_tracking\data\automated\*.mat')
-load('-mat',uigetfile)
+datafile = uigetfile('D:\Drive\desktop\research\shape_tracking\data\automated\*.mat')
+load('-mat',datafile)
 data = normalize(data);
 mag_train = data(:,1:3);
 servo_train = data(:,4:5);

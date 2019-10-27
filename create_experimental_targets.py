@@ -2,41 +2,20 @@
 import numpy as np
 import sys
 
-try:
-    x_start = int(sys.argv[1])
-    x_end = int(sys.argv[2])
-    x_step = int(sys.argv[3])
-    y_start = int(sys.argv[4])
-    y_end = int(sys.argv[5])
-    y_step = int(sys.argv[6])
-    fname = sys.argv[7]
-except():
-    print("improper")
-    x_start = 0
-    y_start = 0
-    x_end = 1024
-    y_end = 1024
-    x_step = 256
-    y_step = 512
-    fname = "snake.txt"
+def write_smooth(grid,fname):
+    with open(fname, "w") as f:
+        direction = 1
+        for row in grid:
+            if direction > 0:
+                for element in row:
+                    f.write(element)
+            else:
+                for element in reversed(row):
+                    f.write(element)
 
-
-num_x = int((x_end + x_step - x_start)/x_step)
-num_y = int((y_end + y_step - y_start)/y_step)
-grid = []
-i = 0
-j = 0
-for x in np.arange(x_start,x_end+x_step,x_step):
-    grid.append([])
-    for y in np.arange(y_start,y_end+y_step,y_step):
-        grid[-1].append("{:04d}{:04d}\n".format(x,y))
-        j+=1
-    i+=1
-    j=0
-
-array = np.array(grid)
-
-def write_smooth(grid):
+            direction*=-1
+def write_smooth2(grid,fname):
+    grid = np.array(grid).T.tolist()
     with open(fname, "w") as f:
         direction = 1
         for row in grid:
@@ -49,13 +28,14 @@ def write_smooth(grid):
 
             direction*=-1
 
-def write_reading(grid):
+
+def write_reading(grid,fname):
     with open(fname,"w") as f:
         for row in grid:
             for element in row:
                 f.write(element)
 
-def write_random(array):
+def write_random(array,fname):
     flat = np.ravel(array)
     print(flat)
     np.random.shuffle(flat)
@@ -65,17 +45,61 @@ def write_random(array):
             f.write(element)
 
 
-sampling_type = "";
-try:
-    sampling_type = sys.argv[8];
-except():
-    sampling_type = "smooth"
-    
-if sampling_type == "smooth":
-    write_smooth(grid)
+def make_grid():
+    # num_x = int((x_end + x_step - x_start)/x_step)
+    # num_y = int((y_end + y_step - y_start)/y_step)
+    grid = []
+    i = 0
+    j = 0
+    for x in np.arange(x_start,x_end+x_step,x_step):
+        grid.append([])
+        for y in np.arange(y_start,y_end+y_step,y_step):
+            grid[-1].append("{:04d}{:04d}\n".format(x,y))
+            j+=1
+        i+=1
+        j=0
 
-if sampling_type == "reading":
-    write_reading(grid)
-if sampling_type == "random":
-    write_random(array)
+    array = np.array(grid)
+    return grid, array
+
+
+#%%
+name  = sys.argv[1]
+x_start = int(sys.argv[2])
+x_end = int(sys.argv[3])
+x_step = int(sys.argv[4])
+axis = int(sys.argv[5])
+direction = sys.argv[6]
+pair = sys.argv[7]
+
+#%%
+y_start = x_start
+y_end = x_end
+y_step =x_step
+
+fname = "{0}_move_axis{1}_{2}_{3}_step_{4}.txt".format(name, axis, direction, pair, x_step)
+
+grid, array = make_grid()
+print(fname)
+
+with open(fname,'w') as f:
+    if pair == "transverse":
+        array = np.flip(array,1)
+    if axis == 2:
+        array = np.transpose(array)
+    pos_list = array.ravel()
+    if direction == "down":
+        pos_list = np.flip(pos_list)
+    for pos in pos_list:
+        f.write(pos)
+# sampling_type = ""
+# if sampling_type == "smooth":
+#     write_smooth(grid, fname)
+# if sampling_type == "smooth2":
+#     write_smooth2(grid, fname)
+
+# if sampling_type == "reading":
+#     write_reading(grid, fname)
+# if sampling_type == "random":
+#     write_random(array, fname)
 
