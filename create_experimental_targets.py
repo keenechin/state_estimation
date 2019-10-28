@@ -65,33 +65,55 @@ def make_grid():
 
 #%%
 name  = sys.argv[1]
-x_start = int(sys.argv[2])
-x_end = int(sys.argv[3])
-x_step = int(sys.argv[4])
-axis = int(sys.argv[5])
-direction = sys.argv[6]
-pair = sys.argv[7]
+num_axes = int(sys.argv[2])
+x_start = int(sys.argv[3])
+x_end = int(sys.argv[4])
+x_step = int(sys.argv[5])
+axis = int(sys.argv[6])
+direction = sys.argv[7]
+pair = sys.argv[8]
+
+
+if num_axes == 2:
+    y_start = x_start
+    y_end = x_end
+    y_step =x_step
+else:
+    if axis == 1:
+        y_start = 512
+        y_end = 512
+        y_step = 1
+    else:
+        y_start = x_start
+        y_end = x_end
+        y_step = x_step
+        x_start = 512
+        x_end = 512
+        x_step = 1
 
 #%%
-y_start = x_start
-y_end = x_end
-y_step =x_step
 
-fname = "{0}_move_axis{1}_{2}_{3}_step_{4}.txt".format(name, axis, direction, pair, x_step)
+
+fname = "{0}_move_axis{1}_{2}_{3}_step_{4}.txt".format(name, axis, direction, pair, max(x_step,y_step))
 
 grid, array = make_grid()
-print(fname)
 
 with open(fname,'w') as f:
     if pair == "transverse":
         array = np.flip(array,1)
+        
     if axis == 2:
         array = np.transpose(array)
-    pos_list = array.ravel()
+
     if direction == "down":
-        pos_list = np.flip(pos_list)
+        array = np.flip(array)
+
+    pos_list = array.ravel()
+    print(array)
     for pos in pos_list:
         f.write(pos)
+print("Wrote data to {}".format(fname))
+
 # sampling_type = ""
 # if sampling_type == "smooth":
 #     write_smooth(grid, fname)
