@@ -32,6 +32,7 @@ void setup()
   mlx.setResolution(0, 0, 0); //x, y, z
   mlx.setOverSampling(0);
   mlx.setDigitalFiltering(4);
+  mlx.setHallConf(0xC);
   Serial.println(7777777);
   delay(20);
 }

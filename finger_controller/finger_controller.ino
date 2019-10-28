@@ -74,6 +74,7 @@ void loop()
 
 void goState(int *current1, int pos1,int *current2, int pos2, int vel){
   if((abs(*current1-pos1)<(1)) & (abs(*current2 - pos2)<(1))){
+    Serial.println(7777777);
     return;
   }
   int start1 = *current1;
