@@ -3,4 +3,5 @@
 *.un~
 *~
 __pycache__/
-.vscode/*
+*vscode/*
+*.json

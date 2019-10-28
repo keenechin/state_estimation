@@ -26,7 +26,9 @@ data_combined_2 = [data, train_data(:,7)];
 [combined_2_model, combined_2_rmse] = trainCombinedGPR(data_combined_2);
 
 %% Get Test data
-load('-mat',uigetfile)
+old_data = data;
+datafile2 = uigetfile('D:\Drive\desktop\research\shape_tracking\data\automated\*.mat')
+load('-mat',datafile2)
 data = normalize(data);
 %%
 test_data = extract_endpoints(cam1_frames,data);
