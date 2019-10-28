@@ -1,2 +1,6 @@
 *.asv
+*.swp
+*.un~
+*~
 __pycache__/
+.vscode/*
