@@ -71,5 +71,8 @@ if __name__ == "__main__":
     bias_mimo2,std_mimo2,r2_2,rmse2,y_hat_mimo2 = predict(regr2,X_test,y_test[:,1])
     print("")    #%% save models
     from joblib import dump,load
-    dump(regr1,'regr1.joblib')
-    dump(regr2,'regr2.joblib')
+    dump(regr1,"models/{}.joblib".format(input("Where to save regressor for axis 1?")))
+    dump(regr2,"models/{}.joblib".format(input("Where to save regressor for axis 2?")))
+
+
+# %%
