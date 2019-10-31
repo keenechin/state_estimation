@@ -108,7 +108,12 @@ with open(fname,'w') as f:
     if direction == "down":
         array = np.flip(array)
 
+
     pos_list = array.ravel()
+
+        
+    if direction == "random":
+        np.random.shuffle(pos_list)
     print(array)
     for pos in pos_list:
         f.write(pos)
