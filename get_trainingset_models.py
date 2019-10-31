@@ -6,6 +6,7 @@ from tkinter import filedialog
 from tkinter import Tk
 import os
 import pandas as pd
+from joblib import load,dump
 
 #%%
 root = tk.Tk()
@@ -35,8 +36,10 @@ for f in files:
         N = 40
         d = 6
         regr1, regr2 = get_trained_models(X_train,y_train,N,d)
-
-
+        if fparams[1]==1:
+            dump(regr1,"{}.joblib".format(f[:-4]))
+        if fparams[1]==2:
+            dump(regr2,"{}.joblib".format(f[:-4]))
         bias_mimo1,std_mimo1,rmse1,r2_1,y_hat_mimo1 = predict(regr1,X_test,y_test[:,0])
         bias_mimo2,std_mimo2,rmse2,r2_2,y_hat_mimo2 = predict(regr2,X_test,y_test[:,1])
         row = [fparams[0], fparams[1], fparams[2], fparams[3], fparams[4],
