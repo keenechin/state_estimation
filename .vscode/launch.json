@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["./null.txt"]
+            "args": ["100", "2"]
         }
     ]
 }
